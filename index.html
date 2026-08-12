@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GATE DA War Room</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Specific layout styles inline for speed */
+        .topbar { display: flex; align-items: center; padding: 15px 30px; border-bottom: 1px solid var(--border); background: var(--bg-primary); }
+        .view-title { font-size: 1.5rem; flex: 1; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">GATE DA<br>WAR ROOM</div>
+            </div>
+            <nav class="nav-menu">
+                <div class="nav-item active" data-view="briefing">📊 Daily Briefing</div>
+                <div class="nav-item" data-view="dashboard">📈 Dashboard</div>
+                <div class="nav-item" data-view="tracker">🗂️ Tracker</div>
+                <div class="nav-item" data-view="mindmap">🗺️ Mind Map</div>
+                <div class="nav-item" data-view="pyq">📝 PYQ Bank</div>
+                <div class="nav-item" data-view="mentor">🤖 AI Mentor</div>
+                <div class="nav-item" data-view="analytics">🔬 Analytics</div>
+                <div class="nav-item" data-view="settings" style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px;">🔑 API Vault & Settings</div>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn" id="export-btn">💾 Export Data</button>
+                <button class="btn" id="import-btn">📂 Import Data</button>
+                <input type="file" id="import-file" style="display:none" accept=".json">
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <button class="mobile-toggle" id="mobile-toggle">☰</button>
+                <h2 class="view-title" id="view-title">Daily Briefing</h2>
+            </header>
+
+            <!-- Views -->
+            <section id="view-briefing" class="view-section active">
+                <div id="briefing-container"></div>
+            </section>
+
+            <section id="view-dashboard" class="view-section">
+                <div id="dashboard-container"></div>
+            </section>
+
+            <section id="view-tracker" class="view-section">
+                <div id="tracker-container"></div>
+            </section>
+
+            <section id="view-mindmap" class="view-section">
+                <div id="mindmap-container"></div>
+            </section>
+
+            <section id="view-pyq" class="view-section">
+                <div id="pyq-container"></div>
+            </section>
+
+            <section id="view-mentor" class="view-section">
+                <div id="mentor-container"></div>
+            </section>
+
+            <section id="view-analytics" class="view-section">
+                <div id="analytics-container"></div>
+            </section>
+
+            <section id="view-settings" class="view-section">
+                <div id="settings-container"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/data.js"></script> <!-- Populated by another agent -->
+    <script src="js/ui.js"></script>
+    <script src="js/tracker.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/mentor.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/mindmap.js"></script>
+    <script src="js/pyq.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
