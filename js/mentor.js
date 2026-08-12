@@ -13,8 +13,9 @@ const Mentor = (function() {
             const keyEntry = keys[currentIndex];
             try {
                 const decryptedKey = await Storage.decryptKey(keyEntry.encrypted);
+                const modelId = settings.customModel ? settings.customModel : 'gemini-2.5-flash';
                 const response = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${decryptedKey}`,
+                    `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${decryptedKey}`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },

@@ -287,6 +287,12 @@ const App = (function() {
                 <input type="text" id="setting-username" class="input" value="${currentSettings.userName || 'Commander'}">
             </div>
             
+            <div style="margin-bottom: 20px;">
+                <label style="display:block; margin-bottom:5px; color:var(--text-secondary);">Custom Fine-Tuned Model ID (Optional)</label>
+                <input type="text" id="setting-custom-model" class="input" placeholder="e.g. tunedModels/gate-da-expert-v1" value="${currentSettings.customModel || ''}">
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top: 5px;">Leave blank to use the default gemini-2.5-flash.</div>
+            </div>
+            
             <div style="margin-bottom: 25px; border-top: 1px solid var(--border); padding-top: 20px;">
                 <h4 style="margin-bottom: 5px; display:flex; align-items:center; gap:8px;">
                     🔑 API Key Vault 
@@ -337,6 +343,7 @@ const App = (function() {
     async function saveBasicSettings() {
         const currentSettings = await Storage.getSettings();
         currentSettings.userName = document.getElementById('setting-username').value;
+        currentSettings.customModel = document.getElementById('setting-custom-model').value.trim();
         await Storage.saveSettings(currentSettings);
         settings = currentSettings;
         UI.showToast('Settings saved', 'success');
