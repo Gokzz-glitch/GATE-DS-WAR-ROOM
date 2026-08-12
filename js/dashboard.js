@@ -55,7 +55,10 @@ const Dashboard = (function() {
                 <div class="card" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                     <h3 style="color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase;">Active Streak</h3>
                     <div class="mono" style="font-size: 3rem; font-weight: bold; color: var(--warning); text-shadow: 0 0 15px rgba(245, 158, 11, 0.3); margin: 10px 0;">${streak} 🔥</div>
-                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Days studied sequentially</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 15px;">Days studied sequentially</div>
+                    <button id="btn-share-progress" class="btn btn-outline" style="width: 100%; border-color: var(--accent); color: var(--accent);">
+                        🔗 Share War Status
+                    </button>
                 </div>
                 
                 <div class="card" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -105,6 +108,18 @@ const Dashboard = (function() {
         }
 
         renderHeatmap(progressData);
+
+        const shareBtn = container.querySelector('#btn-share-progress');
+        if (shareBtn) {
+            shareBtn.addEventListener('click', () => {
+                const shareText = `🛡️ GATE DA War Room Status 🛡️\n` + 
+                                  `🔥 Streak: ${streak} Days\n` +
+                                  `📚 Concepts Completed: ${completed}/${total} (${Math.round(overallPercent)}%)\n` +
+                                  `Target: AIR 1.`;
+                navigator.clipboard.writeText(shareText);
+                UI.showToast('Copied to clipboard. Ready to share!', 'success');
+            });
+        }
     }
 
     async function calculateStreak(progressData) {
@@ -166,6 +181,7 @@ const Dashboard = (function() {
     }
 
     return {
-        renderDashboard
+        renderDashboard,
+        calculateStreak
     };
 })();

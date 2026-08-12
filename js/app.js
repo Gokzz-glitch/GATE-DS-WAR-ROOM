@@ -7,6 +7,8 @@ const App = (function() {
         
         setupNavigation();
         setupExportImport();
+        await applyGamificationTheme();
+        initPWA();
 
         if (!settings.geminiKeys || settings.geminiKeys.length === 0) {
             switchView('settings');
@@ -16,6 +18,86 @@ const App = (function() {
                 await checkComeback();
                 switchView('briefing');
             }, 100);
+        }
+    }
+
+    // Client-Side Alarm Engine
+    let alarmTimer = null;
+
+    async function initPWA() {
+        if ('serviceWorker' in navigator && 'Notification' in window) {
+            try {
+                await navigator.serviceWorker.register('/sw.js');
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    scheduleDailyAlarm(20, 0); // Target: 8:00 PM (20:00)
+                }
+            } catch (err) {
+                console.warn('SW Registration Failed:', err);
+            }
+        }
+    }
+
+    function scheduleDailyAlarm(targetHour, targetMinute) {
+        if (alarmTimer) clearTimeout(alarmTimer);
+
+        const now = new Date();
+        const nextTrigger = new Date();
+        nextTrigger.setHours(targetHour, targetMinute, 0, 0);
+
+        const lastFired = localStorage.getItem('last_daily_notification_date');
+        const todayStr = now.toISOString().split('T')[0];
+
+        if (now >= nextTrigger) {
+            // If it passed today and hasn't fired yet today, fire catch-up notification!
+            if (lastFired !== todayStr) {
+                triggerNotification('War Room Alert', 'Commander, your streak is critically endangered. 10 minutes is all it takes.');
+                localStorage.setItem('last_daily_notification_date', todayStr);
+            }
+            // Set next timer for 8:00 PM tomorrow
+            nextTrigger.setDate(nextTrigger.getDate() + 1);
+        }
+
+        const delayMs = nextTrigger.getTime() - now.getTime();
+
+        // Set in-memory timer while page is open/minimized
+        alarmTimer = setTimeout(async () => {
+            await triggerNotification('War Room Alert', 'It is 8:00 PM! Time for your daily update to protect your streak.');
+            localStorage.setItem('last_daily_notification_date', new Date().toISOString().split('T')[0]);
+            // Reschedule for tomorrow
+            scheduleDailyAlarm(targetHour, targetMinute);
+        }, delayMs);
+    }
+
+    async function triggerNotification(title, body) {
+        const reg = await navigator.serviceWorker.ready;
+        if (Notification.permission === 'granted') {
+            reg.showNotification(title, {
+                body: body,
+                icon: 'https://cdn-icons-png.flaticon.com/512/3242/3242257.png',
+                tag: 'daily-reminder',
+                renotify: true
+            });
+        }
+    }
+
+    // Reactivate check when user switches back to the tab
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            scheduleDailyAlarm(20, 0);
+        }
+    });
+
+    async function applyGamificationTheme() {
+        if (!window.Dashboard) return;
+        const progressData = await Storage.getAllProgress();
+        const streak = await Dashboard.calculateStreak(progressData);
+        
+        document.body.classList.remove('streak-warm', 'streak-fire');
+        if (streak >= 7) {
+            document.body.classList.add('streak-fire');
+        } else if (streak >= 3) {
+            document.body.classList.add('streak-warm');
         }
     }
 
@@ -51,6 +133,7 @@ const App = (function() {
             'tracker': 'Concept Tracker',
             'mindmap': 'Mind Map',
             'pyq': 'PYQ Bank',
+            'coding': 'Code Arena',
             'mentor': 'AI Mentor',
             'analytics': 'Analytics',
             'settings': 'API Vault & Settings'
@@ -62,6 +145,7 @@ const App = (function() {
         else if (viewName === 'tracker') await Tracker.renderTracker();
         else if (viewName === 'mindmap') { if(window.MindMap) MindMap.renderMindMap(); }
         else if (viewName === 'pyq') { if(window.PYQ) PYQ.renderPYQ(); }
+        else if (viewName === 'coding') { if(window.Coding) Coding.renderCoding(); }
         else if (viewName === 'mentor') await Mentor.renderMentor();
         else if (viewName === 'analytics') await Analytics.renderAnalytics();
         else if (viewName === 'settings') await renderSettings();

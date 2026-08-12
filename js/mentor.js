@@ -68,9 +68,33 @@ const Mentor = (function() {
         const progressData = await Storage.getAllProgress();
         const completed = progressData.filter(p => p.status === 'Completed').length;
         
+        // Calculate dynamic state for Jarvis Context
+        const now = Date.now();
+        const overdue = progressData.filter(p => p.status === 'Completed' && p.revisionDue && p.revisionDue < now).length;
+        const streak = window.Dashboard ? await Dashboard.calculateStreak(progressData) : 0;
+        
+        // Find weak subjects (based on quiz scores < 70)
+        const quizHistory = await Storage.getQuizHistory() || [];
+        const weakSubjectsMap = {};
+        quizHistory.forEach(q => {
+            if (q.score < 70) {
+                weakSubjectsMap[q.subject] = (weakSubjectsMap[q.subject] || 0) + 1;
+            }
+        });
+        const weakSubjects = Object.keys(weakSubjectsMap).sort((a,b) => weakSubjectsMap[b] - weakSubjectsMap[a]).slice(0, 2);
+
         return `You are the AI Mentor in the "GATE DA War Room", a premium study application for students preparing for the GATE Data Science and Artificial Intelligence exam.
-User Name: ${settings.userName || 'Student'}
-Progress: ${completed} concepts completed.
+User Name: ${settings.userName || 'Commander'}
+Total Concepts Completed: ${completed}
+Current Study Streak: ${streak} days
+Overdue Revisions: ${overdue}
+Weak Subjects (from quiz history): ${weakSubjects.length > 0 ? weakSubjects.join(', ') : 'None yet'}
+
+Context-Aware Directives:
+- You are a proactive, JARVIS-like assistant.
+- You are aware of the user's current streak. If it's high, congratulate them. If it's 0, encourage them to start.
+- If they have overdue revisions, gently remind them they need to clear their backlog.
+- If they ask about a weak subject, give them extra attention.
 Tone: Direct, encouraging, analytical, exactly like a high-performance military or fighter-pilot commander guiding a trainee. Use Markdown for formatting. Be concise but deep when explaining technical concepts.`;
     }
 

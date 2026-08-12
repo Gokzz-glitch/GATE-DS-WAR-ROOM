@@ -1,9 +1,1 @@
-# Never commit API keys or user data
-*.env
-.env.*
-config.json
-secrets/
-node_modules/
-
-# User data exports
-*.export.json
+vscode-extension/node_modules/

@@ -1,0 +1,31 @@
+{
+  "name": "gate-da-sync",
+  "displayName": "GATE DA Sync",
+  "description": "Live syncs VS Code with the GATE DA War Room browser app",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "gate-da-sync.startSync",
+        "title": "GATE DA: Start Live Sync"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "echo 'No compilation needed for vanilla JS'"
+  },
+  "dependencies": {
+    "ws": "^8.13.0"
+  }
+}

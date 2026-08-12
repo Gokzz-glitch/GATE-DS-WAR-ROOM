@@ -1,21 +1,41 @@
 :root {
+    /* Default Theme (Streak 0-2) */
     --bg-primary: #0a0a0a;
     --bg-secondary: #111111;
-    --bg-tertiary: #1a1a1a;
+    --bg-tertiary: #1e1e1e;
     --bg-card: #141414;
-    --border: #1e1e1e;
-    --accent: #3b82f6;
+    --accent: #3b82f6;       /* Blue */
     --accent-hover: #2563eb;
     --accent-glow: rgba(59, 130, 246, 0.15);
     --accent-dim: #1e3a5f;
-    --text-primary: #e4e4e7;
-    --text-secondary: #71717a;
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
     --text-muted: #52525b;
+    --border: #27272a;
     --success: #22c55e;
     --warning: #f59e0b;
     --danger: #ef4444;
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+/* Gamification: Warm Theme (Streak 3-6) */
+body.streak-warm {
+    --accent: #f97316;       /* Orange */
+    --accent-hover: #ea580c;
+}
+
+/* Gamification: Fire Theme (Streak 7+) */
+body.streak-fire {
+    --accent: #eab308;       /* Gold */
+    --accent-hover: #ca8a04;
+}
+body.streak-fire .card {
+    box-shadow: 0 0 15px rgba(234, 179, 8, 0.1);
+    border-color: rgba(234, 179, 8, 0.2);
+}
+body.streak-fire .btn-primary {
+    box-shadow: 0 0 10px rgba(234, 179, 8, 0.4);
 }
 
 * {
@@ -129,19 +149,26 @@ h1, h2, h3, h4, h5, h6 {
     background: var(--bg-primary);
 }
 
+/* View Management */
 .view-section {
     display: none;
     padding: 30px;
-    animation: fadeIn 0.3s ease forwards;
+    height: calc(100vh - 61px);
+    overflow-y: auto;
+    /* Hardware acceleration for butter-smooth UI */
+    will-change: opacity, transform;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
-
 .view-section.active {
     display: block;
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translate3d(0, 10px, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
 
 /* Mobile Toggle */
@@ -372,4 +399,36 @@ select.input {
     .mobile-toggle {
         display: block;
     }
+}
+
+/* Split.js Gutter Styles */
+.split {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.gutter {
+    background-color: var(--border);
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIjDaQAjwXg1MDJ6oQAAn30/wtU+bF4AAAAASUVORK5CYII=');
+    cursor: col-resize;
+}
+
+.gutter.gutter-vertical {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyCB2iAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFBgIAwAAA6qAwEAO80BAAAAAElFTkSuQmCC');
+    cursor: row-resize;
+}
+
+#view-coding {
+    /* Smooth transitions when opening Code Arena */
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
