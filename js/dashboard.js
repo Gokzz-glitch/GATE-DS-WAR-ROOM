@@ -56,8 +56,11 @@ const Dashboard = (function() {
                     <h3 style="color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase;">Active Streak</h3>
                     <div class="mono" style="font-size: 3rem; font-weight: bold; color: var(--warning); text-shadow: 0 0 15px rgba(245, 158, 11, 0.3); margin: 10px 0;">${streak} 🔥</div>
                     <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 15px;">Days studied sequentially</div>
-                    <button id="btn-share-progress" class="btn btn-outline" style="width: 100%; border-color: var(--accent); color: var(--accent);">
+                    <button id="btn-share-progress" class="btn btn-outline" style="width: 100%; border-color: var(--accent); color: var(--accent); margin-bottom: 10px;">
                         🔗 Share War Status
+                    </button>
+                    <button id="btn-predict-rank" class="btn btn-primary" style="width: 100%;">
+                        🤖 Predict GATE Rank (ML)
                     </button>
                 </div>
                 
@@ -118,6 +121,35 @@ const Dashboard = (function() {
                                   `Target: AIR 1.`;
                 navigator.clipboard.writeText(shareText);
                 UI.showToast('Copied to clipboard. Ready to share!', 'success');
+            });
+        }
+
+        const predictBtn = container.querySelector('#btn-predict-rank');
+        if (predictBtn) {
+            predictBtn.addEventListener('click', async () => {
+                if (!window.RankPredictor || !RankPredictor.isModelReady()) {
+                    UI.showToast('Model is still training... Please wait a moment.', 'warning');
+                    return;
+                }
+                
+                predictBtn.textContent = 'Predicting...';
+                
+                // Calculate average quiz score
+                const quizHistory = await Storage.getQuizHistory() || [];
+                let avgScore = 0;
+                if (quizHistory.length > 0) {
+                    const sum = quizHistory.reduce((acc, curr) => acc + curr.score, 0);
+                    avgScore = sum / quizHistory.length;
+                } else {
+                    avgScore = 50; // default assumption if no quizzes taken
+                }
+
+                const rank = await RankPredictor.predictRank(overallPercent, avgScore, streak);
+                
+                predictBtn.innerHTML = `Estimated AIR: <strong>${rank}</strong>`;
+                predictBtn.style.background = 'var(--bg-tertiary)';
+                predictBtn.style.color = 'var(--accent)';
+                predictBtn.style.borderColor = 'var(--accent)';
             });
         }
     }

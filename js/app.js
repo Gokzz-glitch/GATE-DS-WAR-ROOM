@@ -9,6 +9,11 @@ const App = (function() {
         setupExportImport();
         await applyGamificationTheme();
         initPWA();
+        
+        // Train ML model in the background
+        if (window.RankPredictor) {
+            RankPredictor.initAndTrain();
+        }
 
         if (!settings.geminiKeys || settings.geminiKeys.length === 0) {
             switchView('settings');
