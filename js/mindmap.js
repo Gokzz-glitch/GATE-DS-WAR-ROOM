@@ -3,6 +3,7 @@ const MindMap = (function() {
     let width, height;
     let svg, g;
     let zoom, pan;
+    let resizeListenerAdded = false;
     
     function renderMindMap() {
         container = document.getElementById('mindmap-container');
@@ -32,6 +33,20 @@ const MindMap = (function() {
         document.getElementById('mindmap-subject-select').addEventListener('change', (e) => {
             drawMindMap(e.target.value);
         });
+        
+        if (!resizeListenerAdded) {
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    const select = document.getElementById('mindmap-subject-select');
+                    if (select && document.getElementById('mindmap-svg-container')) {
+                        drawMindMap(select.value);
+                    }
+                }, 300);
+            });
+            resizeListenerAdded = true;
+        }
         
         drawMindMap(subjects[0]);
     }

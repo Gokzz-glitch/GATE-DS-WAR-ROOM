@@ -109,33 +109,66 @@ const Coding = (function() {
     }
 
     function initVSCodeSync() {
-        let ws = new WebSocket('ws://localhost:3000');
-        
-        ws.onopen = () => {
-            console.log('Connected to VS Code Sync Server');
-            UI.showToast('VS Code Sync Connected', 'success');
-        };
-        
-        ws.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                if (data.type === 'code_sync' && editor) {
-                    // Only update if content is different to avoid cursor jumping
-                    if (editor.getValue() !== data.code) {
-                        const position = editor.getPosition();
-                        editor.setValue(data.code);
-                        if (position) editor.setPosition(position);
-                    }
-                }
-            } catch (e) {
-                console.error('Sync error', e);
-            }
-        };
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            return;
+        }
 
-        ws.onclose = () => {
-            // Silently try to reconnect every 5 seconds if VS Code isn't open yet
-            setTimeout(initVSCodeSync, 5000);
-        };
+        try {
+            let ws = new WebSocket('ws://localhost:3000');
+            
+            function getOrCreateIndicator() {
+                let syncStatus = document.getElementById('vscode-sync-status');
+                if (!syncStatus) {
+                    syncStatus = document.createElement('div');
+                    syncStatus.id = 'vscode-sync-status';
+                    syncStatus.style.position = 'absolute';
+                    syncStatus.style.top = '10px';
+                    syncStatus.style.right = '20px';
+                    syncStatus.style.fontSize = '0.8rem';
+                    syncStatus.style.zIndex = '100';
+                    const container = document.getElementById('coding-editor-container') || document.body;
+                    container.style.position = 'relative';
+                    container.appendChild(syncStatus);
+                }
+                return syncStatus;
+            }
+
+            ws.onopen = () => {
+                console.log('Connected to VS Code Sync Server');
+                if (window.UI && window.UI.showToast) {
+                    UI.showToast('VS Code Sync Connected', 'success');
+                }
+                const syncStatus = getOrCreateIndicator();
+                syncStatus.innerHTML = '<span style="color: var(--success);">● Sync Connected</span>';
+            };
+            
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'code_sync' && editor) {
+                        if (editor.getValue() !== data.code) {
+                            const position = editor.getPosition();
+                            editor.setValue(data.code);
+                            if (position) editor.setPosition(position);
+                        }
+                    }
+                } catch (e) {
+                    console.error('Sync error', e);
+                }
+            };
+
+            ws.onclose = () => {
+                const syncStatus = getOrCreateIndicator();
+                syncStatus.innerHTML = '<span style="color: var(--warning);">○ Sync Disconnected</span>';
+                setTimeout(initVSCodeSync, 5000);
+            };
+
+            ws.onerror = (e) => {
+                console.log('VS Code Sync WebSocket error.');
+            };
+        } catch (e) {
+            console.log('Could not initialize VS Code Sync:', e.message);
+        }
     }
 
     function renderCoding() {

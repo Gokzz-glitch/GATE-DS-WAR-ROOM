@@ -50,6 +50,21 @@ const Analytics = (function() {
             }
         });
 
+        // Calculate projected finish
+        let projectedFinishText = 'Need more data';
+        const totalConcepts = concepts.length;
+        const remaining = totalConcepts - totalCompleted;
+        if (remaining === 0 && totalConcepts > 0) {
+            projectedFinishText = 'Completed!';
+        } else if (progressData.length > 0 && totalCompleted > 0) {
+            const firstEntry = progressData.reduce((min, p) => p.startedAt && p.startedAt < min ? p.startedAt : min, Date.now());
+            const daysSinceFirst = Math.max(1, (Date.now() - firstEntry) / (1000 * 60 * 60 * 24));
+            const dailyRate = Math.max(1, totalCompleted / daysSinceFirst);
+            const daysRemaining = remaining / dailyRate;
+            const finishDate = new Date(Date.now() + daysRemaining * 24 * 60 * 60 * 1000);
+            projectedFinishText = finishDate.toISOString().split('T')[0];
+        }
+
         container.innerHTML = `
             <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 20px;">
                 <div class="card">
@@ -64,7 +79,7 @@ const Analytics = (function() {
                     </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span>Projected Finish</span>
-                        <span class="mono">2026-01-15</span> <!-- Mocked projection -->
+                        <span class="mono">${projectedFinishText}</span>
                     </div>
                 </div>
 

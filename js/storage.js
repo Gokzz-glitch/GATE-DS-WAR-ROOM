@@ -8,7 +8,7 @@ const Storage = (function () {
         async generateEncryptionKey() {
             const encoder = new TextEncoder();
             const keyMaterial = await crypto.subtle.importKey(
-                'raw', encoder.encode('gate-da-warroom-vault-' + navigator.userAgent.slice(0, 20)),
+                'raw', encoder.encode('gate-da-warroom-v1-key-salt'),
                 'PBKDF2', false, ['deriveKey']
             );
             return crypto.subtle.deriveKey(

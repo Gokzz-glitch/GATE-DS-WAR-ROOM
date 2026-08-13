@@ -135,7 +135,7 @@ const Dashboard = (function() {
                 predictBtn.textContent = 'Predicting...';
                 
                 // Calculate average quiz score
-                const quizHistory = await Storage.getQuizHistory() || [];
+                const quizHistory = await Storage.getAllQuizHistory() || [];
                 let avgScore = 0;
                 if (quizHistory.length > 0) {
                     const sum = quizHistory.reduce((acc, curr) => acc + curr.score, 0);

@@ -32,7 +32,7 @@ const App = (function() {
     async function initPWA() {
         if ('serviceWorker' in navigator && 'Notification' in window) {
             try {
-                await navigator.serviceWorker.register('/sw.js');
+                await navigator.serviceWorker.register('./sw.js');
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
                     scheduleDailyAlarm(20, 0); // Target: 8:00 PM (20:00)
@@ -519,3 +519,9 @@ const App = (function() {
 })();
 
 document.addEventListener('DOMContentLoaded', App.init);
+
+// Global error boundary
+window.addEventListener('unhandledrejection', (e) => {
+    console.error('Unhandled rejection:', e.reason);
+    if (window.UI) UI.showToast('Something went wrong. Please reload.', 'error');
+});

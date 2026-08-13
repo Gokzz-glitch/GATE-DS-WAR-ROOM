@@ -1,1 +1,10 @@
-vscode-extension/node_modules/
+node_modules/
+.env
+.env.*
+__pycache__/
+*.pyc
+data/
+.DS_Store
+Thumbs.db
+*.log
+.vscode/

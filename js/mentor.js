@@ -75,7 +75,7 @@ const Mentor = (function() {
         const streak = window.Dashboard ? await Dashboard.calculateStreak(progressData) : 0;
         
         // Find weak subjects (based on quiz scores < 70)
-        const quizHistory = await Storage.getQuizHistory() || [];
+        const quizHistory = await Storage.getAllQuizHistory() || [];
         const weakSubjectsMap = {};
         quizHistory.forEach(q => {
             if (q.score < 70) {

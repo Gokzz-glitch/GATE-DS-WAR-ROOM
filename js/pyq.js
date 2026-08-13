@@ -114,9 +114,9 @@ ${JSON.stringify(GATE_DA_PYQ, null, 2)}
             const response = await Mentor.callGeminiWithRotation(prompt, systemInstruction);
             
             let formatted = response
-                .replace(/```([\\s\\S]*?)```/g, '<pre style="background:var(--bg-primary); padding:10px; border-radius:4px; overflow-x:auto; border:1px solid var(--border); margin:10px 0;"><code style="font-family:var(--font-mono); font-size:0.9rem;">$1</code></pre>')
-                .replace(/\\*\\*([^\\*]+)\\*\\*/g, '<strong style="color:var(--text-primary);">$1</strong>')
-                .replace(/\\n/g, '<br>');
+                .replace(/```([\s\S]*?)```/g, '<pre style="background:var(--bg-primary); padding:10px; border-radius:4px; overflow-x:auto; border:1px solid var(--border); margin:10px 0;"><code style="font-family:var(--font-mono); font-size:0.9rem;">$1</code></pre>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:var(--text-primary);">$1</strong>')
+                .replace(/\n/g, '<br>');
                 
             resContainer.innerHTML = `
                 <h3 style="margin-bottom: 10px; color: var(--success); border-bottom: 1px solid var(--border); padding-bottom: 8px;">
