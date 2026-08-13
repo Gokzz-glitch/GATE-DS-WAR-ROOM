@@ -132,7 +132,8 @@ const Tracker = (function() {
         const detailsHtml = isExpanded ? `
             <tr class="tracker-details" style="background: var(--bg-secondary); border-bottom: 1px solid var(--border);">
                 <td colspan="5" style="padding: 20px;">
-                    <div style="margin-bottom: 15px; color: var(--text-secondary);">${concept.description}</div>
+                    <div style="margin-bottom: 10px; color: var(--text-secondary);">${concept.description}</div>
+                    <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem; border-color: var(--accent); color: var(--accent); margin-bottom: 15px;" onclick="App.switchView('mentor'); setTimeout(() => Mentor.sendQuickPrompt('Why is ${concept.concept.replace(/'/g, "\\'")} important in real-world Data Science & AI?'), 100)">💡 Real-World Context (Ask AI)</button>
                     <div class="grid" style="grid-template-columns: 1fr 1fr;">
                         <div>
                             <h4 style="margin-bottom: 10px; color: var(--accent);">Resources</h4>

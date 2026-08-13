@@ -215,6 +215,16 @@ const App = (function() {
                 </div>
             </div>
 
+            <div class="card" style="margin-bottom: 20px; border: 1px solid var(--accent);">
+                <h3 style="margin-bottom: 10px;">🗺️ Mission Choices</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px;">Choose your strategy for today to maintain momentum.</p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="App.switchView('tracker')">1. Advance (New Concepts)</button>
+                    <button class="btn btn-outline" onclick="App.switchView('pyq')" style="border-color: var(--accent); color: var(--accent);">2. Tactical Skirmish (PYQs)</button>
+                    ${toRevise.length > 0 ? `<button class="btn btn-secondary" onclick="App.switchView('tracker')">3. Fortify (Clear ${toRevise.length} Revisions)</button>` : `<button class="btn btn-secondary" onclick="App.switchView('coding')">3. Code Arena (Practice)</button>`}
+                </div>
+            </div>
+
             <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
                 <div class="card">
                     <h3 style="margin-bottom: 15px; display: flex; justify-content: space-between;">
